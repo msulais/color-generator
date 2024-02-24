@@ -1,135 +1,174 @@
 (() => {
-    const TEXT_COLOR_RATIO = 4.5
     const root = document.documentElement
     const input_colorPicker = document.getElementById('color-picker')
     const button_theme = document.getElementById('theme')
     const span_colorHex = document.getElementById('color-hex')
     let theme = 'dark'
 
-    // https://www.myndex.com/WEB/LuminanceContrast
+    /**
+     * Source: https://www.myndex.com/WEB/LuminanceContrast
+     * 
+     * Range (rgb): 
+     * * `r: 0-255` 
+     * * `g: 0-255`
+     * * `b: 0-255`
+     * @param {{ r: number, g: number, b: number }} rgb 
+     */
     function getLuminance(rgb) {
         const r = Math.pow(rgb.r / 255, 2.2)
         const g = Math.pow(rgb.g / 255, 2.2)
         const b = Math.pow(rgb.b / 255, 2.2)
-
         const luminance = r * 0.2126 + g * 0.7152 + b * 0.0722
 
         return luminance
     }
 
-    // https://www.myndex.com/WEB/LuminanceContrast
-    // Y = Luminance
+    /**
+     * Source: https://www.myndex.com/WEB/LuminanceContrast
+     * 
+     * `Y` = Luminance 
+     * @param { number } Y 
+     */
     function YtoLstar(Y) {
 	    if (Y <= (216 / 24389)) return Y * (24389 / 27)
-
-        return Math.pow(Y, 1 / 3) * 116 - 16
+        return Math.pow(Y, (1 / 3)) * 116 - 16
 	}
 
-    // https://www.myndex.com/WEB/LuminanceContrast
+    /**
+     * Source: https://www.myndex.com/WEB/LuminanceContrast
+     * 
+     * Range (rgb): 
+     * * `r: 0-255` 
+     * * `g: 0-255`
+     * * `b: 0-255`
+     * 
+     * Result value is between `0` (low contrast) to `100` (high contrast)
+     * @param {{ r: number, g: number, b: number }} rgb1 
+     * @param {{ r: number, g: number, b: number }} rgb2 
+     */
     function getContrastRatio(rgb1, rgb2){
         const L1 = YtoLstar(getLuminance(rgb1))
         const L2 = YtoLstar(getLuminance(rgb2))
-        const lightestL1 = Math.max(L1, L2)
-        const darkerL1 = Math.min(L1, L2)
-
-        const ratio = lightestL1 - darkerL1
-
-        // value: 0 (darkest) -> 100 (lightess)
+        const ratio = Math.max(L1, L2) - Math.min(L1, L2)
         return ratio
     }
 
+    /**
+     * Range (hsl): 
+     * - `h: 0-1`
+     * - `s: 0-1`
+     * - `l: 0-1`
+     * @param {string} hex 
+     */
     function hexToHSL(hex) {
-        // Validate hex string
         if (!/^#?([0-9a-f]{3}){1,2}$/i.test(hex)) {
             throw new Error("Invalid hex color format!")
         }
       
-        // Remove leading hashtag
         hex = hex.startsWith("#") ? hex.slice(1) : hex
       
-        // Convert hex to RGB values (0-255)
         const r = parseInt(hex.substring(0, 2), 16) / 255
         const g = parseInt(hex.substring(2, 4), 16) / 255
         const b = parseInt(hex.substring(4, 6), 16) / 255
       
-        // Calculate max and min RGB values
         const max = Math.max(r, g, b)
         const min = Math.min(r, g, b)
       
-        // Calculate hue
         let h
-        if (max === min) {
-            h = 0 // No hue
-        } else if (max === r) {
-            h = 60 * (g - b) / (max - min) + 360
-        } else if (max === g) {
-            h = 60 * (b - r) / (max - min) + 120
-        } else {
-            h = 60 * (r - g) / (max - min) + 240
-        }
+        if (max === min) h = 0 
+        else if (max === r) h = 60 * (g - b) / (max - min) + 360
+        else if (max === g) h = 60 * (b - r) / (max - min) + 120
+        else h = 60 * (r - g) / (max - min) + 240
       
-        // Calculate saturation
         const l = (max + min) / 2
         const s = max === min 
             ? 0 
             : (max - min) / (l > 0.5 ? 2 - max - min : max + min)
       
-        // Return HSL values (0-360, 0-1, 0-1)
-        return { h: h % 360, s, l }
+        // Return HSL values (H: 0-1, S: 0-1, L: 0-1)
+        return { h: h / 360, s, l }
     }
 
-    function hexToRGB(hex) {
-        // Validate hex string
-        if (!/^#?([0-9a-f]{3}){1,2}$/i.test(hex)) {
-            throw new Error("Invalid hex color format!")
-        }
-      
-        // Remove leading hashtag
-        hex = hex.startsWith("#") ? hex.slice(1) : hex
-      
-        // Convert hex to RGB values (0-255)
-        const r = parseInt(hex.substring(0, 2), 16)
-        const g = parseInt(hex.substring(2, 4), 16)
-        const b = parseInt(hex.substring(4, 6), 16)
+    /**
+     * Source: http://www.easyrgb.com/en/math.php?MATH=M19#text19
+     * @param {number} v1 
+     * @param {number} v2 
+     * @param {number} vH 
+     */
+    function hueToRgb(v1, v2, vH) {
+        while (vH < 0) vH += 1
+        while (vH > 1) vH -= 1
 
-        return {r, g, b}
+        if (6 * vH < 1) return v1 + (v2 - v1) * 6 * vH
+        if (2 * vH < 1) return v2
+        if (3 * vH < 2) return v1 + (v2 - v1) * (2 / 3 - vH) * 6
+        return v1
     }
 
-    // https://stackoverflow.com/a/64090995
+    /**
+     * http://www.easyrgb.com/en/math.php?MATH=M19#text19
+     * 
+     * Range (rgb): 
+     * * `r: 0-255` 
+     * * `g: 0-255`
+     * * `b: 0-255`
+     * @param {{h: number, s: number, l: number}} hsl 
+     */
     function hslToRgb(hsl) {
-        let a = hsl.s * Math.min(hsl.l, 1 - hsl.l)
-        let f = (n, k = (n + hsl.h / 30) % 12) => hsl.l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+        let r, g, b
+        
+        if (hsl.s == 0) r = g = b = hsl.l
+        else {
+            const v2 = hsl.l < 0.5
+                ? hsl.l * (1 + hsl.s)
+                : hsl.l + hsl.s - hsl.s * hsl.l
+            const v1 = 2 * hsl.l - v2
+
+            r = hueToRgb(v1, v2, hsl.h + 1 / 3)
+            g = hueToRgb(v1, v2, hsl.h)
+            b = hueToRgb(v1, v2, hsl.h - 1 / 3)
+        }
+
         return {
-            r: Math.round(f(0) * 255), 
-            g: Math.round(f(8) * 255), 
-            b: Math.round(f(4) * 255)
+            r: Math.round(r * 255), 
+            g: Math.round(g * 255), 
+            b: Math.round(b * 255)
         }
     } 
 
+    /**
+     * @param {{r: number, g: number, b: number}} rgb 
+     */
     function rgbToCSSValue(rgb) {
         return `${rgb.r}, ${rgb.g}, ${rgb.b}`
     }
 
+    /**
+     * @param {string} hexColorSource 
+     */
     function generateColor(hexColorSource){
         const hsl = hexToHSL(hexColorSource)
         let primaryLight, onPrimaryLight, primaryDark, onPrimaryDark
         let surfaceLight, onSurfaceLight, surfaceDark, onSurfaceDark
         let errorLight,   onErrorLight,   errorDark,   onErrorDark
 
-        function getLightness(hsl, targetRatio){
-            let lightness = 0, minDiff = 0, ratio = 0
-            ratio = getContrastRatio(hslToRgb(hsl), hslToRgb({...hsl, l: 0})) / 100 * (targetRatio + 1)
-            minDiff = Math.abs(ratio - targetRatio)
-            for (let i = 0; i < 21; i++){
-                const l = i * 5 / 100 // 0.0 -> 1.0
-                ratio = getContrastRatio(hslToRgb(hsl), hslToRgb({...hsl, l})) / 100 * (targetRatio + 1)
-                const diff = Math.abs(ratio - targetRatio)
-                if (diff < minDiff) {
-                    lightness = l
-                    minDiff = diff
-                }
+        /**
+         * `contrast` must be a value between `0 (bad) => 100 (best (high contrast))`. 
+         * @param {{h: number, s: number, l: number}} hsl 
+         * @param {number} contrast 
+         */
+        function getLightness(hsl, contrast){
+            let lightness = 0
+            const brightness = YtoLstar(getLuminance(hslToRgb(hsl)))
+
+            for (let i = 0; i < 101; i++){
+                if (brightness > 50) lightness = i / 100
+                else lightness = 1 - (i / 100)
+
+                if (getContrastRatio(hslToRgb(hsl), hslToRgb({...hsl, l: lightness})) < contrast) break
             }
-            return lightness
+
+            return Math.max(0.0, Math.min(1.0, lightness))
         }
         
         // Primary Light
@@ -137,7 +176,7 @@
         root.style.setProperty('--color-primary-light', rgbToCSSValue(hslToRgb(primaryLight)))
         
         // On Primary Light
-        onPrimaryLight = {...primaryLight, l: getLightness(primaryLight, TEXT_COLOR_RATIO)}
+        onPrimaryLight = {...primaryLight, s: 0, l: getLightness(primaryLight, 80)}
         root.style.setProperty('--color-on-primary-light', rgbToCSSValue(hslToRgb(onPrimaryLight)))
         
         // Surface Light
@@ -145,7 +184,7 @@
         root.style.setProperty('--color-surface-light', rgbToCSSValue(hslToRgb(surfaceLight)))
         
         // On Surface Light
-        onSurfaceLight = {...surfaceLight, l: getLightness(surfaceLight, TEXT_COLOR_RATIO)}
+        onSurfaceLight = {...surfaceLight, s: 0, l: getLightness(surfaceLight, 80)}
         root.style.setProperty('--color-on-surface-light', rgbToCSSValue(hslToRgb(onSurfaceLight)))
         
         // Error Light
@@ -153,40 +192,40 @@
         root.style.setProperty('--color-error-light', rgbToCSSValue(hslToRgb(errorLight)))
         
         // On Error Light
-        onErrorLight = {...errorLight, l: getLightness(errorLight, TEXT_COLOR_RATIO)}
+        onErrorLight = {...errorLight, s: 0, l: getLightness(errorLight, 80)}
         root.style.setProperty('--color-on-error-light', rgbToCSSValue(hslToRgb(onErrorLight)))
         
         // Primary Dark
-        primaryDark = {...primaryLight, l: getLightness(primaryLight, 0.3)}
+        primaryDark = {...primaryLight, l: getLightness(primaryLight, 30)}
         root.style.setProperty('--color-primary-dark', rgbToCSSValue(hslToRgb(primaryDark)))
         
         // On Primary Light
-        onPrimaryDark = {...primaryDark, l: getLightness(primaryDark, TEXT_COLOR_RATIO)}
+        onPrimaryDark = {...primaryDark, s: 0, l: getLightness(primaryDark, 80)}
         root.style.setProperty('--color-on-primary-dark', rgbToCSSValue(hslToRgb(onPrimaryDark)))
         
         // Surface Dark
-        surfaceDark = {...surfaceLight, l: 0.08}
+        surfaceDark = {...surfaceLight, l: getLightness(surfaceLight, 90)}
         root.style.setProperty('--color-surface-dark', rgbToCSSValue(hslToRgb(surfaceDark)))
         
         // On Surface Light
-        onSurfaceDark = {...surfaceDark, l: getLightness(surfaceDark, TEXT_COLOR_RATIO)}
+        onSurfaceDark = {...surfaceDark, l: getLightness(surfaceDark, 80)}
         root.style.setProperty('--color-on-surface-dark', rgbToCSSValue(hslToRgb(onSurfaceDark)))
         
         // Error Dark
-        errorDark = {...errorLight, l: getLightness(errorLight, 0.3)}
+        errorDark = {...errorLight, l: getLightness(errorLight, 30)}
         root.style.setProperty('--color-error-dark', rgbToCSSValue(hslToRgb(errorDark)))
         
         // On Error Light
-        onErrorDark = {...errorDark, l: getLightness(errorDark, TEXT_COLOR_RATIO)}
+        onErrorDark = {...errorDark, l: getLightness(errorDark, 80)}
         root.style.setProperty('--color-on-error-dark', rgbToCSSValue(hslToRgb(onErrorDark)))
     }
 
     input_colorPicker.onchange = ev => {
-        const rgb = hexToRGB(ev.target.value)
         const hsl = hexToHSL(ev.target.value)
+        const rgb = hslToRgb(hsl)
         span_colorHex.textContent = ev.target.value 
             + ` :: rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
-            + ` :: hsl(${hsl.h.toFixed(2)}, ${hsl.s.toFixed(2)}, ${hsl.l.toFixed(2)})`
+            + ` :: hsl(${Math.round((hsl.h * 360))}, ${Math.round(hsl.s * 100)}%, ${Math.round(hsl.l * 100)}%)`
         generateColor(ev.target.value)
     }
 
@@ -200,4 +239,6 @@
         theme = 'dark'
         root.classList.add('dark')
     }
+
+    generateColor('#008516')
 })()

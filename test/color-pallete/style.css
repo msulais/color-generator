@@ -1,15 +1,15 @@
 :root {
-    --color-primary-light: 17, 208, 99; 
-    --color-on-primary-light: 0, 0, 0; 
+    --color-primary-light: 0, 133, 22; 
+    --color-on-primary-light: 255, 255, 255; 
     --color-surface-light: 250, 250, 250; 
     --color-on-surface-light: 51, 51, 51; 
-    --color-error-light: 208, 17, 17; 
+    --color-error-light: 133, 0, 0; 
     --color-on-error-light: 255, 255, 255; 
-    --color-primary-dark: 231, 253, 241; 
-    --color-on-primary-dark: 4, 47, 22; 
-    --color-surface-dark: 20, 20, 20; 
-    --color-on-surface-dark: 217, 217, 217; 
-    --color-error-dark: 245, 137, 137; 
+    --color-primary-dark: 0, 224, 37; 
+    --color-on-primary-dark: 0, 0, 0; 
+    --color-surface-dark: 31, 31, 31; 
+    --color-on-surface-dark: 219, 219, 219; 
+    --color-error-dark: 255, 61, 61; 
     --color-on-error-dark: 0, 0, 0;
 
     --color-primary: var(--color-primary-light);
