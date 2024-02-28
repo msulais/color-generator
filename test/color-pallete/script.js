@@ -176,7 +176,7 @@
         root.style.setProperty('--color-primary-light', rgbToCSSValue(hslToRgb(primaryLight)))
         
         // On Primary Light
-        onPrimaryLight = {...primaryLight, s: 0, l: getLightness(primaryLight, 80)}
+        onPrimaryLight = {...primaryLight, s: 0, l: getLightness(primaryLight, 90)}
         root.style.setProperty('--color-on-primary-light', rgbToCSSValue(hslToRgb(onPrimaryLight)))
         
         // Surface Light
@@ -184,7 +184,7 @@
         root.style.setProperty('--color-surface-light', rgbToCSSValue(hslToRgb(surfaceLight)))
         
         // On Surface Light
-        onSurfaceLight = {...surfaceLight, s: 0, l: getLightness(surfaceLight, 80)}
+        onSurfaceLight = {...surfaceLight, s: 0, l: getLightness(surfaceLight, 90)}
         root.style.setProperty('--color-on-surface-light', rgbToCSSValue(hslToRgb(onSurfaceLight)))
         
         // Error Light
@@ -192,7 +192,7 @@
         root.style.setProperty('--color-error-light', rgbToCSSValue(hslToRgb(errorLight)))
         
         // On Error Light
-        onErrorLight = {...errorLight, s: 0, l: getLightness(errorLight, 80)}
+        onErrorLight = {...errorLight, s: 0, l: getLightness(errorLight, 90)}
         root.style.setProperty('--color-on-error-light', rgbToCSSValue(hslToRgb(onErrorLight)))
         
         // Primary Dark
@@ -200,7 +200,7 @@
         root.style.setProperty('--color-primary-dark', rgbToCSSValue(hslToRgb(primaryDark)))
         
         // On Primary Light
-        onPrimaryDark = {...primaryDark, s: 0, l: getLightness(primaryDark, 80)}
+        onPrimaryDark = {...primaryDark, s: 0, l: getLightness(primaryDark, 90)}
         root.style.setProperty('--color-on-primary-dark', rgbToCSSValue(hslToRgb(onPrimaryDark)))
         
         // Surface Dark
@@ -208,7 +208,7 @@
         root.style.setProperty('--color-surface-dark', rgbToCSSValue(hslToRgb(surfaceDark)))
         
         // On Surface Light
-        onSurfaceDark = {...surfaceDark, l: getLightness(surfaceDark, 80)}
+        onSurfaceDark = {...surfaceDark, l: getLightness(surfaceDark, 90)}
         root.style.setProperty('--color-on-surface-dark', rgbToCSSValue(hslToRgb(onSurfaceDark)))
         
         // Error Dark
@@ -216,7 +216,7 @@
         root.style.setProperty('--color-error-dark', rgbToCSSValue(hslToRgb(errorDark)))
         
         // On Error Light
-        onErrorDark = {...errorDark, l: getLightness(errorDark, 80)}
+        onErrorDark = {...errorDark, l: getLightness(errorDark, 90)}
         root.style.setProperty('--color-on-error-dark', rgbToCSSValue(hslToRgb(onErrorDark)))
     }
 

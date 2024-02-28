@@ -172,9 +172,9 @@ function generateColor(hexColor){
     }
 
     color = hsl
-    onColor = {...hsl, l: getLightness(hsl, 80)}
+    onColor = {...hsl, l: getLightness(hsl, 90)}
     colorDark = {...color, l: getLightness(color, 30)}
-    onColorDark = {...colorDark, l: getLightness(colorDark, 80)}
+    onColorDark = {...colorDark, l: getLightness(colorDark, 90)}
 
     return { 
         color       : rgbToHex(hslToRgb(color       )), 
