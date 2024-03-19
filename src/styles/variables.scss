@@ -1,0 +1,125 @@
+:root {
+
+    // surface colors
+    --color-surface-light: 250, 250, 250; 
+    --color-on-surface-light: 31, 31, 31; 
+    --color-surface-dark: 31, 31, 31; 
+    --color-on-surface-dark: 250, 250, 250; 
+
+    // primary colors
+    --color-primary-light: 122, 39, 206; 
+    --color-on-primary-light: 255, 255, 255; 
+    --color-primary-dark: 188, 144, 234; 
+    --color-on-primary-dark: 0, 0, 0; 
+    
+    // error colors
+    --color-error-light: 206, 39, 39; 
+    --color-on-error-light: 255, 255, 255; 
+    --color-error-dark: 237, 161, 161; 
+    --color-on-error-dark: 0, 0, 0;
+
+    --color-primary: var(--color-primary-light); 
+    --color-on-primary: var(--color-on-primary-light); 
+    --color-surface: var(--color-surface-light); 
+    --color-on-surface: var(--color-on-surface-light); 
+    --color-error: var(--color-error-light); 
+    --color-on-error: var(--color-on-error-light); 
+
+    // opacity level 
+    --opacity-level-0: .02;
+    --opacity-level-1: .04;
+    --opacity-level-2: .08;
+    --opacity-level-3: .12;
+    --opacity-level-4: .16;
+    --opacity-level-5: .20;
+    --opacity-level-reverse-0: .92;
+    --opacity-level-reverse-1: .84;
+    --opacity-level-reverse-2: .76;
+    --opacity-level-reverse-3: .68;
+    --opacity-level-reverse-4: .60;
+    --opacity-level-reverse-5: .52;
+    --opacity-border: .32;
+
+    // font sizes
+    --font-size-body-small: 12px;
+    --font-size-body-medium: 14px;
+    --font-size-body-large: 16px;
+    --font-size-title-small: 20px;
+    --font-size-title-medium: 24px;
+    --font-size-title-large: 28px;
+    --font-size-headline-small: 32px;
+    --font-size-headline-medium: 36px;
+    --font-size-headline-large: 40px;
+    --font-size-display-small: 44px;
+    --font-size-display-medium: 48px;
+    --font-size-display-large: 52px;
+
+    // elevation
+    --elevation-level-1: 0 1px 3px 1px #00000026, 0 1px 2px #0000004d;
+    --elevation-level-2: 0 2px 6px 2px #00000026, 0 1px 2px #0000004d;
+    --elevation-level-3: 0 1px 3px #0000004d, 0 4px 8px 3px #00000026;
+    --elevation-level-4: 0 2px 3px #0000004d, 0 6px 10px 4px #00000026;
+    --elevation-level-5: 0 4px 4px #0000004d, 0 8px 12px 6px #00000026;
+
+    // fixed size
+    --popover-margin: 8px;
+    --max-content-width: 1440px;
+    --appbar-height: 58px;
+
+    // z-index
+    --z-index-appbar: 10;
+    --z-index-tooltip: 100;
+    --z-index-dialog-header: 2;
+    --z-index-dialog-actions: 2;
+    --z-index-dialog-close-btn: 3;
+
+    background-color: rgb(var(--color-surface));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+    color: rgb(var(--color-on-surface));
+
+    &.dark {
+        // elevation
+        --elevation-level-1: 0 1px 2px #0000004d, 0 1px 3px 1px #00000026;
+        --elevation-level-2: 0 1px 2px #0000004d, 0 2px 6px 2px #00000026;
+        --elevation-level-3: 0 1px 3px #0000004d, 0 4px 8px 3px #00000026;
+        --elevation-level-4: 0 2px 3px #0000004d, 0 6px 10px 4px #00000026;
+        --elevation-level-5: 0 4px 4px #0000004d, 0 8px 12px 6px #00000026;
+        
+        --color-primary: var(--color-primary-dark); 
+        --color-on-primary: var(--color-on-primary-dark); 
+        --color-surface: var(--color-surface-dark); 
+        --color-on-surface: var(--color-on-surface-dark); 
+        --color-error: var(--color-error-dark); 
+        --color-on-error: var(--color-on-error-dark);
+
+        color-scheme: dark;
+
+        & * {
+            color-scheme: dark;
+        }
+    }
+
+    &.system {
+        @media (prefers-color-scheme: dark) {
+            // elevation
+            --elevation-level-1: 0 1px 2px #0000004d, 0 1px 3px 1px #00000026;
+            --elevation-level-2: 0 1px 2px #0000004d, 0 2px 6px 2px #00000026;
+            --elevation-level-3: 0 1px 3px #0000004d, 0 4px 8px 3px #00000026;
+            --elevation-level-4: 0 2px 3px #0000004d, 0 6px 10px 4px #00000026;
+            --elevation-level-5: 0 4px 4px #0000004d, 0 8px 12px 6px #00000026;
+
+            --color-primary: var(--color-primary-dark); 
+            --color-on-primary: var(--color-on-primary-dark); 
+            --color-surface: var(--color-surface-dark); 
+            --color-on-surface: var(--color-on-surface-dark); 
+            --color-error: var(--color-error-dark); 
+            --color-on-error: var(--color-on-error-dark);
+    
+            color-scheme: dark;
+    
+            & * {
+                color-scheme: dark;
+            }
+        }
+    }
+}

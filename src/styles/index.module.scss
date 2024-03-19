@@ -1,0 +1,115 @@
+.body {
+    padding: 0 16px;
+}
+
+.colorInput {
+    --button_btn-padding: 4px 7px !important;
+
+    & input {
+        border: none;
+        height: 28px;
+        width: 24px;
+
+        @media (hover:hover) {
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        &::-webkit-color-swatch {
+            border-radius: 50%;
+        }
+    }
+}
+
+.h1 {
+    font-weight: 100;
+    font-size: var(--font-size-display-large);
+    padding: 16px 0 32px 0;
+}
+
+.input {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    padding-bottom: 16px;
+    justify-content: center;
+    max-width: inherit;
+
+    > :global(.btn) {
+        border-radius: 9999px;
+        width: 132px;
+    }
+}
+
+.lists {
+    max-width: inherit;
+    width: 720px;
+
+    &:not(:empty) {
+        margin-bottom: 32px;
+    }
+
+    & :global(.list) {
+        border: 1px solid rgba(var(--color-on-surface), var(--opacity-level-1));
+        background-color: rgba(var(--color-on-surface), var(--opacity-level-1));
+
+        &:not(:last-child) {
+            margin-bottom: 8px;
+        }
+    }
+
+    & :global(.list-leading) > div {
+        min-width: 24px;
+        min-height: 24px;
+        border-radius: 12px;
+        box-shadow: var(--elevation-level-1);
+    }
+}
+
+.onPrimary {
+    border-radius: 0 0 0 8px;
+    background-color: rgb(var(--color-on-primary-light));
+    color: rgb(var(--color-primary-light));
+}
+
+.onPrimaryDark {
+    border-radius: 0 0 8px 0;
+    background-color: rgb(var(--color-on-primary-dark));
+    color: rgb(var(--color-primary-dark));
+}
+
+.primary {
+    border-radius: 8px 0 0 0;
+    background-color: rgb(var(--color-primary-light));
+    color: rgb(var(--color-on-primary-light));
+}
+
+.primaryDark {
+    border-radius: 0 8px 0 0;
+    background-color: rgb(var(--color-primary-dark));
+    color: rgb(var(--color-on-primary-dark));
+}
+
+.result {
+    width: 720px;
+    margin-bottom: 32px;
+    max-width: inherit;
+    border-radius: 8px;
+    box-shadow: var(--elevation-level-1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    > div {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+
+        > div {
+            padding: 16px;
+            min-height: 132px;
+            font-weight: 600;
+            letter-spacing: .01em;
+        }
+    }
+}

@@ -1,0 +1,306 @@
+// Priority state (lowest: important):
+// - Normal
+// - Focus
+// - Selected | Unselected
+// - Hover
+// - Active (pressed)
+// - Disabled
+
+.btn {
+    --button_btn-padding: 4px 12px;
+    --icon-animation: wiggle-icon .5s ease-in-out;
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    font-size: var(--font-size-body-medium);
+    justify-content: center;
+    min-height: 40px;
+    position: relative;
+    scrollbar-width: none;
+    transition: all .2s;
+    -ms-overflow-style: none;
+
+    @media (hover:hover) {
+        &:hover { 
+            cursor: pointer;
+            
+            > .btn-layer > .icon {
+                animation: var(--icon-animation);
+            }
+        }
+    }
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &[data-icon] {
+        --button_btn-padding: 4px 9px;
+    }
+
+    &[data-compact] {
+        --button_btn-padding: 0 8px;
+        min-height: 32px;
+
+        &[data-icon] {
+            --button_btn-padding: 0 6px;
+        }
+    }
+
+    &[data-elevation='1']{
+        box-shadow: var(--elevation-level-1);
+    }
+
+    &[data-elevation='2']{
+        box-shadow: var(--elevation-level-2);
+    }
+
+    &[data-elevation='3']{
+        box-shadow: var(--elevation-level-3);
+    }
+
+    &[data-elevation='4']{
+        box-shadow: var(--elevation-level-4);
+    }
+
+    &[data-elevation='5']{
+        box-shadow: var(--elevation-level-5);
+    }
+
+    &::before {
+        --weight: 4px;
+        --size: calc(100% - 16px);
+        --border-radius: var(--weight);
+
+        background-color: rgb(var(--color-primary));
+        border-radius: var(--border-radius);
+        content: '';
+        height: 0;
+        opacity: 0;
+        position: absolute;
+        transition: all .2s;
+        width: 0;
+        
+    }
+
+    &[data-selected]::before {
+        opacity: 1;
+    }
+
+    &:is(.btn-filled)::before {
+        background-color: rgb(var(--color-on-primary));
+    }
+
+    &:is([data-indicator=top],[data-indicator=bottom])::before {
+        --size: calc(100% - 24px);
+    }
+    
+    &[data-indicator=top]{ 
+        &::before {
+            left: 50%;
+            min-height: var(--weight);
+            top: 0;
+            transform: translateX(-50%);
+            width: var(--size);
+        }
+
+        &:not(.btn-transparent)::before {
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+    }
+
+    &[data-indicator=bottom]{ 
+        &::before {
+            bottom: 0;
+            left: 50%;
+            min-height: var(--weight);
+            transform: translateX(-50%);
+            width: var(--size);
+        }
+
+        &:not(.btn-transparent)::before {
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+    }
+
+    &[data-indicator=left]{ 
+        &::before {
+            height: var(--size);
+            left: 0;
+            min-width: var(--weight);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        &:not(.btn-transparent)::before {
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+    }
+
+    &[data-indicator=right]{ 
+        &::before {
+            height: var(--size);
+            min-width: var(--weight);
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        &:not(.btn-transparent)::before {
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+    }
+}
+
+.btn-transparent {
+    --background-color: var(--color-on-surface); 
+
+    &:disabled {
+        color: rgba(var(--color-on-surface), var(--opacity-level-5));
+    }
+
+    &:not(:disabled){
+
+        &[data-focus] {
+            --background-opacity: var(--opacity-level-0);
+        }
+
+        @media (hover:hover) {
+            &:hover {
+                --background-opacity: var(--opacity-level-1);
+                --button_border-color: var(--color-on-surface);
+                --button_border-opacity: var(--opacity-level-1);
+            }
+        }
+        
+        &:active {
+            --background-opacity: var(--opacity-level-0);
+            --button_border-color: var(--color-on-surface);
+            --button_border-opacity: var(--opacity-level-1);
+
+            > .btn-layer {
+                scale: .85;
+            }
+        }
+    }
+}
+
+.btn-filled {
+    --background-opacity: var(--opacity-level-reverse-1);
+    --background-color: var(--color-primary); 
+    --button_border-color: var(--color-on-surface);
+    --button_border-opacity: var(--opacity-level-1);
+    color: rgb(var(--color-on-primary));
+
+    &:disabled {
+        --background-color: var(--color-on-surface);
+        --background-opacity: var(--opacity-level-1);
+        color: rgba(var(--color-on-surface), var(--opacity-level-reverse-5));
+    }
+
+    &:not(:disabled){
+        &[data-focus] {
+            --background-opacity: var(--opacity-level-reverse-2);
+        }
+
+        @media (hover:hover) {
+            &:hover {
+                --background-opacity: var(--opacity-level-reverse-0);
+            }
+        }
+        
+        &:active {
+            --background-opacity: var(--opacity-level-reverse-2);
+
+            > .btn-layer {
+                scale: .85;
+            }
+        }
+    }
+}
+
+.btn-filled-tonal {
+    --background-color: var(--color-on-surface); 
+    --background-opacity: var(--opacity-level-2);
+    --button_border-color: var(--color-on-surface);
+    --button_border-opacity: var(--opacity-level-1);
+
+    &:disabled {
+        --background-opacity: var(--opacity-level-0);
+        color: rgba(var(--color-on-surface), var(--opacity-level-5));
+    }
+
+    &:not(:disabled){
+        &[data-focus] {
+            --background-opacity: var(--opacity-level-1);
+        }
+
+        @media (hover:hover) {
+            &:hover {
+                --background-opacity: var(--opacity-level-3);
+            }
+        }
+        
+        &:active {
+            --background-opacity: var(--opacity-level-1);
+
+            > .btn-layer {
+                scale: .85;
+            }
+        }
+    }
+}
+
+.btn-layer {
+    align-items: center;
+    border-radius: inherit;
+    display: flex;
+    font-size: inherit;
+    font-weight: inherit;
+    gap: 8px;
+    height: 100%;
+    justify-content: center;
+    overflow: hidden;
+    padding: var(--button_btn-padding);
+    transition: all .2s;
+    
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    > .icon {
+        position: relative
+    }
+}
+
+.btn-outlined {
+    --background-color: var(--color-on-surface); 
+    --button_border-color: var(--color-on-surface);
+    --button_border-opacity: var(--opacity-border);
+    
+    &:disabled {
+        color: rgba(var(--color-on-surface), var(--opacity-level-5));
+        --button_border-color: var(--color-on-surface);
+        --button_border-opacity: var(--opacity-level-5);
+    }
+
+    &:not(:disabled){
+        &[data-focus] {
+            --background-opacity: var(--opacity-level-0);
+        }
+
+        @media (hover:hover) {
+            &:hover {
+                --background-opacity: var(--opacity-level-1);
+            }
+        }
+        
+        &:active {
+            --background-opacity: var(--opacity-level-0);
+
+            > .btn-layer {
+                scale: .85;
+            }
+        }
+    }
+}

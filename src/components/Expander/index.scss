@@ -1,0 +1,107 @@
+.expander {
+    border: 1px solid rgba(var(--color-on-surface), var(--opacity-level-2));
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all .2s;
+    
+    &[data-open] {
+        > .expander-header { 
+            border-radius: 4px 4px 0 0;
+
+            > .btn .icon {
+                rotate: 180deg;
+            }
+        }
+        
+        > .expander-content {
+            border-top: 1px solid rgba(var(--color-on-surface), var(--opacity-level-5));
+        }
+    }
+    
+    &[data-variant='filled-tonal']{
+        > .expander-header {
+            --background-color: var(--color-on-surface); 
+            --background-opacity: var(--opacity-level-1);
+            
+            @media (hover:hover) {
+                &:hover {
+                    --background-opacity: var(--opacity-level-2);
+                }
+            }
+            
+            &:active {
+                --background-opacity: var(--opacity-level-0);
+            }
+        }
+
+        > .expander-content {
+            --background-opacity: var(--opacity-level-3);
+        }
+    }
+
+    &[data-variant=outlined] {
+        --background-opacity: 0;
+        border-color: rgba(var(--color-on-surface), var(--opacity-border));
+        
+        > .expander-header {
+            --background-color: var(--color-on-surface); 
+            @media (hover:hover) {
+                &:hover {
+                    --background-opacity: var(--opacity-level-1);
+                }
+            }
+            
+            &:active {
+                --background-opacity: var(--opacity-level-0);
+            }
+        }
+
+        > .expander-content {
+            --background-opacity: var(--opacity-level-1);
+        }
+    }
+}
+
+.expander-content {
+    --background-color: var(--color-on-surface); 
+    border-radius: 0 0 4px 4px;
+    overflow: auto;
+    transition: all .2s;
+    
+    > div {
+        padding: 16px;
+    }
+}
+
+.expander-header {
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    min-height: 56px;
+    padding: 8px;
+    text-decoration: none;
+    transition: all .2s, border-bottom 0s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:active {
+        padding: 8px 8px 8px 16px;
+    }
+
+    > div {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        gap: 12px;
+        padding: 0 8px;
+    }
+
+    > .btn .icon {
+        transition: all .2s;
+    }
+}
