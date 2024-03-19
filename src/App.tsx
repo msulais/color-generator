@@ -1,4 +1,4 @@
-import { Component, For, Match, Switch, createContext, createSignal, onMount, useContext } from "solid-js"
+import { Component, For, Match, Show, Switch, createContext, createSignal, onMount, useContext } from "solid-js"
 import { addClassListModule } from "./utils/element"
 import { SetStoreFunction } from 'solid-js/store'
 import { ParentComponent } from 'solid-js'
@@ -21,8 +21,37 @@ import { ColorListItem } from "./types/colors"
 import List from "./components/List"
 import { CookieKeys } from "./lib/cookies"
 import { getCookie, setCookie } from "./utils/cookie"
+import { copy } from "./utils/copy-paste"
+import { upperText } from "./utils/texts"
 
+const CopyButton: Component<{text: string, variant?: "filled-tonal" | "filled" | "outlined" | "transparent"}> = (props) => {
+    const [timeoutId, setTimeoutId] = createSignal<number | null>(null)
+    const [isCopied, setIsCopied] = createSignal<boolean>(false)
 
+    function copyColor(){
+        if (timeoutId()){
+            clearTimeout(timeoutId()!)
+            setTimeoutId(null)
+            setIsCopied(false)
+        }
+        const t = setTimeout(() => {
+            setTimeoutId(null)
+            setIsCopied(false)
+        }, 15E2)
+
+        copy(props.text)
+        setIsCopied(true)
+        setTimeoutId(t)
+    }
+
+    return (<Tooltip child="Copy color" position={PopoverPosition.CENTER_BOTTOM}>
+        <Button iconOnly onClick={copyColor} variant={props.variant ?? "filled-tonal"}>
+            <Show when={isCopied()} fallback={<Icon>&#xE51B;</Icon>}>
+                <Icon>&#xE3D8;</Icon>
+            </Show>
+        </Button>
+    </Tooltip>)
+}
 
 const Input: Component = () => {
     const [store, setStore] = useStore()!
@@ -110,7 +139,7 @@ const Input: Component = () => {
             <label class="btn btn-filled-tonal" classList={addClassListModule(s.colorInput)} data-icon>
                 <div class="btn-layer">
                     <input ref={inputRef} type="color" onChange={(e) => changeColor(e.currentTarget.value)} value={store.colors.seed}/>
-                    { store.colors.seed.toUpperCase() }
+                    { upperText(store.colors.seed) }
                 </div>
             </label>
         </Tooltip>
@@ -126,12 +155,24 @@ const Result: Component = () => {
 
     return (<div class={s.result}>
         <div>
-            <div class={s.primary}>Primary Light<br/><span>{store.colors.color.toUpperCase()}</span></div>
-            <div class={s.onPrimary}>On Primary Light<br/><span>{store.colors.onColor.toUpperCase()}</span></div>
+            <div class={s.primary}>
+                Primary Light<br/><span>{upperText(store.colors.color)}</span>
+                <CopyButton text={upperText(store.colors.color)}/>
+            </div>
+            <div class={s.onPrimary}>
+                On Primary Light<br/><span>{upperText(store.colors.onColor)}</span>
+                <CopyButton text={upperText(store.colors.onColor)}/>
+            </div>
         </div>
         <div>
-            <div class={s.primaryDark}>Primary Dark<br/><span>{store.colors.colorDark.toUpperCase()}</span></div>
-            <div class={s.onPrimaryDark}>On Primary Dark<br/><span>{store.colors.onColorDark.toUpperCase()}</span></div>
+            <div class={s.primaryDark}>
+                Primary Dark<br/><span>{upperText(store.colors.colorDark)}</span>
+                <CopyButton text={upperText(store.colors.onColorDark)}/>
+            </div>
+            <div class={s.onPrimaryDark}>
+                On Primary Dark<br/><span>{upperText(store.colors.onColorDark)}</span>
+                <CopyButton text={upperText(store.colors.onColorDark)}/>
+            </div>
         </div>
     </div>)
 }
@@ -142,8 +183,15 @@ const Lists: Component = () => {
         <For each={store.colorLists}>{c => 
             <List 
                 leading={<div style={{"background-color": c.seed}}/>}
-                child={c.seed.toUpperCase()}
-                subtitle={[c.color, c.onColor, c.colorDark, c.onColorDark].map(v => v.toUpperCase()).join(', ')} 
+                child={upperText(c.seed)}
+                subtitle={[c.color, c.onColor, c.colorDark, c.onColorDark].map(v => upperText(v)).join(', ')} 
+                trailing={<CopyButton variant="transparent" text={[
+                    '--seed: ' + upperText(c.seed),
+                    '--color-light: ' + upperText(c.color), 
+                    '--on-color-light: ' + upperText(c.onColor), 
+                    '--color-dark: ' + upperText(c.colorDark), 
+                    '--on-color-dark: ' + upperText(c.onColorDark)
+                ].join(';\n') + ';'}/>}
             />
         }</For>
     </div>)
